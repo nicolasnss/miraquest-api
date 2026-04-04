@@ -31,3 +31,15 @@ build/
 
 ### VS Code ###
 .vscode/
+
+# Banco de dados local (H2/SQLite)
+*.mv.db
+*.trace.db
+
+# Logs da aplicação
+/logs/
+*.log
+
+# Arquivos temporários do Sistema Operacional
+.DS_Store
+Thumbs.db
