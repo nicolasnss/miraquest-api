@@ -42,4 +42,11 @@ public class Questao {
 	@Column(columnDefinition = "TEXT")
 	private String explicacao;
 
+	/** Banca organizadora (ex.: CESPE, FCC). Opcional. */
+	private String banca;
+
+	/** Observação sobre a "pegadinha" da questão. Opcional. */
+	@Column(columnDefinition = "TEXT")
+	private String pegadinha;
+
 }

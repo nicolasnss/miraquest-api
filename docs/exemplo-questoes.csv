@@ -1,0 +1,4 @@
+materia,tipo,enunciado,resposta,distratores,explicacao,banca,pegadinha
+Redes,CLOZE,A camada de ___ do modelo OSI cuida do roteamento.,Rede,Transporte|Física|Enlace,Camada 3 trata endereçamento lógico.,CESPE,Não confundir com Transporte (camada 4).
+Linux,CERTO_ERRADO,O comando ls -la exibe arquivos ocultos.,CERTO,,A opção -a inclui entradas iniciadas por ponto.,FCC,
+Banco de Dados,MULTIPLA_ESCOLHA,Qual comando é DDL?,CREATE TABLE,SELECT|INSERT|UPDATE,DDL define estruturas.,FGV,Parece DML
