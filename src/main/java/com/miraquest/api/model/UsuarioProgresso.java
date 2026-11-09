@@ -25,8 +25,11 @@ public class UsuarioProgresso {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 
-	@Column(nullable = false)
+	@Column(nullable = false, unique = true)
 	private String emailUsuario;
+
+	/** Hash BCrypt; nulo para usuários de seed sem login. */
+	private String senhaHash;
 
 	@Column(nullable = false)
 	private int vidas = 5;
