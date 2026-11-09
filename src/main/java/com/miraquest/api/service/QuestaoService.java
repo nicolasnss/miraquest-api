@@ -132,7 +132,7 @@ public class QuestaoService {
 
 	private QuestaoLicaoDto paraLicaoDto(Questao q) {
 		return new QuestaoLicaoDto(q.getId(), q.getMateria(), q.getTipo(), q.getEnunciado(),
-				montarOpcoes(q));
+				montarOpcoes(q), q.getBanca(), q.getPegadinha());
 	}
 
 	/** Distratores + resposta correta, embaralhados e sem duplicatas. CERTO_ERRADO não tem opções. */

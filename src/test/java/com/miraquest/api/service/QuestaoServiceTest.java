@@ -50,6 +50,24 @@ class QuestaoServiceTest {
 	}
 
 	@Test
+	void licaoExpoeBancaEPegadinha() {
+		Questao q = questao(1L, TipoQuestao.CLOZE, "Rede", "Transporte");
+		q.setBanca("CESPE");
+		q.setPegadinha("Cuidado com o termo absoluto");
+		Questao semExtras = questao(2L, TipoQuestao.CLOZE, "Rede", "Transporte");
+		when(questaoRepository.findCincoAleatoriasPorMateria("Redes")).thenReturn(List.of(q, semExtras));
+
+		List<QuestaoLicaoDto> licao = service(1).obterLicao("Redes");
+
+		QuestaoLicaoDto com = licao.stream().filter(d -> d.id() == 1L).findFirst().orElseThrow();
+		QuestaoLicaoDto sem = licao.stream().filter(d -> d.id() == 2L).findFirst().orElseThrow();
+		assertThat(com.banca()).isEqualTo("CESPE");
+		assertThat(com.pegadinha()).isEqualTo("Cuidado com o termo absoluto");
+		assertThat(sem.banca()).isNull();
+		assertThat(sem.pegadinha()).isNull();
+	}
+
+	@Test
 	void opcoesSaoEmbaralhadas() {
 		Questao q = questao(1L, TipoQuestao.MULTIPLA_ESCOLHA, "A", "B|C|D|E|F");
 		Set<List<String>> ordens = new HashSet<>();
