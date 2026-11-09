@@ -6,6 +6,7 @@ import static org.mockito.Mockito.when;
 
 import java.util.HashSet;
 import java.util.List;
+import java.util.Optional;
 import java.util.Random;
 import java.util.Set;
 
@@ -13,8 +14,11 @@ import org.junit.jupiter.api.Test;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.miraquest.api.dto.QuestaoLicaoDto;
+import com.miraquest.api.dto.ResultadoVerificacaoDto;
+import com.miraquest.api.dto.VerificarQuestaoRequest;
 import com.miraquest.api.model.Questao;
 import com.miraquest.api.model.TipoQuestao;
+import com.miraquest.api.model.UsuarioProgresso;
 import com.miraquest.api.repository.QuestaoRepository;
 import com.miraquest.api.repository.UsuarioProgressoRepository;
 
@@ -50,21 +54,33 @@ class QuestaoServiceTest {
 	}
 
 	@Test
-	void licaoExpoeBancaEPegadinha() {
+	void licaoExpoeBancaMasNaoPegadinha() {
 		Questao q = questao(1L, TipoQuestao.CLOZE, "Rede", "Transporte");
 		q.setBanca("CESPE");
 		q.setPegadinha("Cuidado com o termo absoluto");
-		Questao semExtras = questao(2L, TipoQuestao.CLOZE, "Rede", "Transporte");
-		when(questaoRepository.findCincoAleatoriasPorMateria("Redes")).thenReturn(List.of(q, semExtras));
+		Questao semBanca = questao(2L, TipoQuestao.CLOZE, "Rede", "Transporte");
+		when(questaoRepository.findCincoAleatoriasPorMateria("Redes")).thenReturn(List.of(q, semBanca));
 
 		List<QuestaoLicaoDto> licao = service(1).obterLicao("Redes");
 
-		QuestaoLicaoDto com = licao.stream().filter(d -> d.id() == 1L).findFirst().orElseThrow();
-		QuestaoLicaoDto sem = licao.stream().filter(d -> d.id() == 2L).findFirst().orElseThrow();
-		assertThat(com.banca()).isEqualTo("CESPE");
-		assertThat(com.pegadinha()).isEqualTo("Cuidado com o termo absoluto");
-		assertThat(sem.banca()).isNull();
-		assertThat(sem.pegadinha()).isNull();
+		assertThat(licao).filteredOn(d -> d.id() == 1L).singleElement().satisfies(d -> assertThat(d.banca()).isEqualTo("CESPE"));
+		assertThat(licao).filteredOn(d -> d.id() == 2L).singleElement().satisfies(d -> assertThat(d.banca()).isNull());
+		assertThat(QuestaoLicaoDto.class.getRecordComponents()).extracting("name").doesNotContain("pegadinha");
+	}
+
+	@Test
+	void verificarRevelaPegadinhaNoAcertoENoErro() {
+		Questao q = questao(1L, TipoQuestao.CLOZE, "Rede", "Transporte");
+		q.setPegadinha("Cuidado com o termo absoluto");
+		UsuarioProgresso u = new UsuarioProgresso();
+		when(questaoRepository.findById(1L)).thenReturn(Optional.of(q));
+		when(progressoRepository.findById(7L)).thenReturn(Optional.of(u));
+
+		ResultadoVerificacaoDto acerto = service(1).verificarQuestao(7L, new VerificarQuestaoRequest(7L, 1L, "Rede", null));
+		ResultadoVerificacaoDto erro = service(1).verificarQuestao(7L, new VerificarQuestaoRequest(7L, 1L, "Outra", null));
+
+		assertThat(acerto.pegadinha()).isEqualTo("Cuidado com o termo absoluto");
+		assertThat(erro.pegadinha()).isEqualTo("Cuidado com o termo absoluto");
 	}
 
 	@Test

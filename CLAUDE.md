@@ -27,7 +27,7 @@ Spring Boot 4.0.5, Java 17, Spring Data JPA, Spring Security (resource server, J
 - Colunas: materia, tipo, enunciado, resposta, distratores (separados por `|`), explicacao, banca, pegadinha. Obrigatórias: materia, tipo, enunciado, resposta. Ordem livre; cabeçalho sem acento/maiúsculas; delimitador `,` `;` ou tab detectado; UTF-8 (BOM ok); máx. 2 MB / 5000 linhas.
 - Tipo aceita CLOZE/LACUNA, CERTO_ERRADO, MULTIPLA_ESCOLHA. CLOZE exige `___` no enunciado; CLOZE e MÚLTIPLA exigem >= 1 distrator (dedup, sem repetir a resposta); CERTO_ERRADO aceita CERTO/ERRADO/C/E/V/F.
 - Linhas inválidas são reportadas (`linha` 1 = cabeçalho) e as válidas entram; duplicadas (mesma matéria sem diferenciar caixa + mesmo enunciado) são ignoradas, então reenviar o arquivo é seguro.
-- `pegadinha` é texto livre (nota sobre a armadilha), `banca` texto curto; ambos opcionais e expostos em `GET /api/questoes/licao` (nulos quando ausentes).
+- `pegadinha` é texto livre (nota sobre a armadilha), `banca` texto curto; ambos opcionais. `banca` sai em `GET /api/questoes/licao`; `pegadinha` só sai em `POST /api/questoes/verificar` (após responder, pois pode entregar a resposta).
 
 ## Regras importantes
 - **Autorização:** o usuário vem do `sub` do JWT, nunca do corpo. `usuarioId` divergente do token → 403 (`/verificar` e `/usuario/{id}`). `/error` precisa ficar liberado, senão erros viram 401.

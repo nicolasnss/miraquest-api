@@ -106,13 +106,13 @@ public class QuestaoService {
 			progresso.setXpTotal(progresso.getXpTotal() + 10);
 			atualizarStreakPorRespostaCorreta(progresso);
 			usuarioProgressoRepository.save(progresso);
-			return new ResultadoVerificacaoDto(sucesso, explicacao, 10);
+			return new ResultadoVerificacaoDto(sucesso, explicacao, 10, questao.getPegadinha());
 		}
 
 		progresso.setVidas(Math.max(0, progresso.getVidas() - 1));
 		progresso.setStreakDias(0);
 		usuarioProgressoRepository.save(progresso);
-		return new ResultadoVerificacaoDto(sucesso, explicacao, 0);
+		return new ResultadoVerificacaoDto(sucesso, explicacao, 0, questao.getPegadinha());
 	}
 
 	private void validarMateriaOpcional(String materiaInformada, Questao questao) {
@@ -132,7 +132,7 @@ public class QuestaoService {
 
 	private QuestaoLicaoDto paraLicaoDto(Questao q) {
 		return new QuestaoLicaoDto(q.getId(), q.getMateria(), q.getTipo(), q.getEnunciado(),
-				montarOpcoes(q), q.getBanca(), q.getPegadinha());
+				montarOpcoes(q), q.getBanca());
 	}
 
 	/** Distratores + resposta correta, embaralhados e sem duplicatas. CERTO_ERRADO não tem opções. */
