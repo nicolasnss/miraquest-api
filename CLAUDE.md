@@ -11,7 +11,7 @@ Spring Boot 4.0.5, Java 17, Spring Data JPA, Spring Security (resource server, J
 - `repository/` — Spring Data; `findCincoAleatoriasPorMateria` usa SQL nativo (`RANDOM()`).
 - `model/` — entidades JPA (`Questao`, `UsuarioProgresso`, enum `TipoQuestao`: CLOZE, CERTO_ERRADO, MULTIPLA_ESCOLHA).
 - `dto/` — records enviados/recebidos pela API. Nunca expor entidade direto.
-- `config/SecurityConfig` — filtro stateless, JWT (`JwtProperties`: `miraquest.jwt.secret`/`JWT_SECRET`, `JWT_EXPIRACAO_HORAS`), BCrypt.
+- `config/SecurityConfig` — filtro stateless, JWT (`JwtProperties`: `miraquest.jwt.secret`/`JWT_SECRET` **obrigatório** (sem padrão; o perfil `h2` gera um aleatório a cada execução), `JWT_EXPIRACAO_HORAS`), BCrypt.
 - `resources/data.sql` — seed idempotente (só insere se as tabelas estiverem vazias; funciona em Postgres e H2). Schema via `ddl-auto=update` (Flyway ainda não adotado).
 
 ## Endpoints

@@ -1,6 +1,7 @@
 package com.miraquest.api.config;
 
 import java.nio.charset.StandardCharsets;
+import java.util.Set;
 
 import javax.crypto.SecretKey;
 import javax.crypto.spec.SecretKeySpec;
@@ -52,8 +53,17 @@ public class SecurityConfig {
 		return new BCryptPasswordEncoder();
 	}
 
+	/** Segredos que já estiveram versionados e, portanto, são públicos: nunca aceitar. */
+	private static final Set<String> SEGREDOS_PUBLICOS = Set.of("dev-only-secret-change-me-in-production-0123456789");
+
 	@Bean
 	SecretKey jwtSecretKey(JwtProperties props) {
+		if (props.secret() == null || props.secret().isBlank()) {
+			throw new IllegalStateException("miraquest.jwt.secret (JWT_SECRET) é obrigatório");
+		}
+		if (SEGREDOS_PUBLICOS.contains(props.secret())) {
+			throw new IllegalStateException("miraquest.jwt.secret é um valor público antigo do repositório; gere outro");
+		}
 		byte[] bytes = props.secret().getBytes(StandardCharsets.UTF_8);
 		if (bytes.length < 32) {
 			throw new IllegalStateException("miraquest.jwt.secret precisa ter pelo menos 32 bytes");
